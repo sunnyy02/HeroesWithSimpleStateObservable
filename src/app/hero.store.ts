@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { of } from 'rxjs/observable/of';
 import { map } from "rxjs/operators";
 import { deepCopy } from './clone.function';
 import { Hero } from "./hero";
@@ -13,17 +12,17 @@ export class HeroState {
 }
 @Injectable()
 export class HeroStore extends Store<HeroState> {
-  heroes$ = this.state$.pipe(map((x) => x.heroes));
+  public readonly heroes$ = this.state$.pipe(map((x) => x.heroes));
 
-  hero$ = this.state$.pipe(map((x) => x.hero));
+  public readonly hero$ = this.state$.pipe(map((x) => x.hero));
 
-  searchResult$ = this.state$.pipe(map(x=> x.searchResult));
+  public readonly searchResult$ = this.state$.pipe(map(x=> x.searchResult));
 
   constructor(private heroApi: HeroApiService) {
     super(new HeroState());
   }
 
-  async loadAll() {
+  public async loadAll() {
     const heroes = await this.heroApi.loadAll();
     this.setState({
       ...this.state,
@@ -39,9 +38,8 @@ export class HeroStore extends Store<HeroState> {
     });
   }
 
-  async updateHero(hero: Hero, savedHero: (resp: Hero) => void) {
+  public async updateHero(hero: Hero, savedHero: (resp: Hero) => void) {
     (await this.heroApi.save(hero)).subscribe(async response => {
-      console.log('after save', hero);
       this.setState({
         ...this.state,
         hero: hero,
@@ -51,16 +49,16 @@ export class HeroStore extends Store<HeroState> {
 
   }
 
-  async add(hero: Hero) {
+  public async add(hero: Hero) {
     return (await this.heroApi.add(hero)).subscribe((response) => {
-      console.log('response', response);
       this.setState({
         ...this.state,
         heroes: [...this.state.heroes, response],
       });
     });
   }
-  async delete(hero: Hero) {
+  
+  public async delete(hero: Hero) {
     return (await this.heroApi.delete(hero)).subscribe((response) => {
       const tobeDeletedIndex = this.state.heroes.findIndex((element) => {
         return element.id === hero.id;
@@ -73,10 +71,8 @@ export class HeroStore extends Store<HeroState> {
     });
   }
 
-  async searchHeroes(term: string){
-    console.log('term', term);
+  public async searchHeroes(term: string){
     const heroes = await this.heroApi.search(term);
-    console.log('search heroes', heroes);
     this.setState({
       ...this.state,
       searchResult: heroes,

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-
 import { Hero }         from '../hero';
 import { HeroStore } from '../hero.store';
 
@@ -34,8 +33,8 @@ export class HeroDetailComponent implements OnInit {
     this.location.back();
   }
 
- save(): void {
-    this.store.updateHero(this.store.state.hero, (res:any) => {
+ save(hero): void {
+    this.store.updateHero(hero, (res:any) => {
       this.goBack();
     });
   }
